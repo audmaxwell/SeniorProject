@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const path = require('path');
 const app = express();
+const router = express.Router();
 var mysql = require('mysql');
 var conn = mysql.createConnection({
   host: 'localhost', 
@@ -13,14 +14,10 @@ conn.connect(function(err) {
   if (err) throw err;
   console.log('Database is connected successfully !');
 });
-module.exports = conn;
-app.use(express.urlencoded({
-  extended: true
-}));
 app.use(express.static(path.join(__dirname, 'build')));
-app.post('/registration/create', (req, res) => {
-  console.log(req.body);
+router.post('create-user', (req, res) => {
   const { email, username, password } = req.body;
+  console.log(email,username,password)
   var sql = `INSERT INTO users (
     email,username, password)
     VALUES(
