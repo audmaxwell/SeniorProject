@@ -1,8 +1,8 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import Header from './components/header';
-import Register from './components/registration';
-import {BrowserRouter as Router,Switch, Route} from 'react-router-dom';
+import Register from './routes/users';
+
 function App() {
   useEffect(function(){
     fetch("/ping").then((res)=> res.json()).then(console.log)

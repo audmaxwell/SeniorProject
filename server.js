@@ -15,23 +15,15 @@ conn.connect(function(err) {
   console.log('Database is connected successfully !');
 });
 app.use(express.static(path.join(__dirname, 'build')));
-router.post('create-user', (req, res) => {
-  const { email, username, password } = req.body;
-  console.log(email,username,password)
-  var sql = `INSERT INTO users (
-    email,username, password)
-    VALUES(
-    ?, ?, ?)`;
-  conn.query(sql, [email, username, password], function (err, data) {
-    if (err) throw err;
+app.post('/create-user', (req, res) => {
+  const userDetails=req.body;
+  var sql = 'INSERT INTO users SET ?';
+  console.log(userDetails)
+  conn.query(sql, userDetails,function (err, data) { 
+      if (err) throw err;
          console.log("User data is inserted successfully "); 
   });
-//  conn.query(sql, userDetails,function (err, data) { 
- //     if (err) throw err;
- //        console.log("User data is inserted successfully "); 
-//  });
 // res.redirect('/users/form')
-
 })
 
 app.get('/ping', function (req, res) {
