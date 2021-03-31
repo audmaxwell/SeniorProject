@@ -1,7 +1,9 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import Header from './components/header';
-import Register from './routes/users';
+import Registration from './pages/registration';
+import Homepage from './pages/homepage';
+import {Switch,BrowserRouter as Router, Route} from 'react-router-dom';
 
 function App() {
   useEffect(function(){
@@ -13,14 +15,12 @@ function App() {
         <Header/>
       </div>
       <h1>Welcome!</h1>
-      <Register/>
-      {/* <Router>
-          <Switch>3
-            <Route path='/homepage'><Homepage /></Route>
-            <Route exact path='/'><Register /></Route>
+      <Router>
+          <Switch>
+            <Route path='/homepage'><Homepage/></Route>
+            <Route path='/'><Registration/></Route>
           </Switch>
       </Router>
-      */}
     </div>
   );
 }

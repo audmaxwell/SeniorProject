@@ -4,6 +4,7 @@ const path = require('path');
 const app = express();
 const router = express.Router();
 var mysql = require('mysql');
+const { response } = require('express');
 var conn = mysql.createConnection({
   host: 'localhost', 
   user: 'root',
@@ -14,17 +15,63 @@ conn.connect(function(err) {
   if (err) throw err;
   console.log('Database is connected successfully !');
 });
+
 app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+
+app.post('/new-post', (req,res)=> {
+  const subj = req.body.subject
+  const sql = `INSERT INTO posts (content) VALUES(?);`
+  console.log(subj)
+  conn.query(sql, [subj], (err,results,fields) => {
+    if (err) {
+      console.warn("Error querying database:", err)
+      return
+    } else {
+      console.log('Data inserted successfully!'); 
+    }
+  })
+});
 app.post('/create-user', (req, res) => {
-  const userDetails=req.body;
-  var sql = 'INSERT INTO users SET ?';
-  console.log(userDetails)
-  conn.query(sql, userDetails,function (err, data) { 
-      if (err) throw err;
-         console.log("User data is inserted successfully "); 
+  const { username, email, password } = req.body
+  const sql = `INSERT INTO users(username, email, password, created)
+  VALUES(?, ?, ?, NOW());`
+  conn.query(sql, [username, email, password], (err, results, fields) => { 
+    if (err) {
+      console.warn("Error querying database:", err)
+      return
+    } else {
+      console.log('Data inserted successfully!'); 
+    }
   });
-// res.redirect('/users/form')
+
+  res.end()
 })
+app.get('/create-user', (req, res) => {
+  conn.query("SELECT username,email FROM users;", (err, results, fields) => {
+    if(err) {
+      console.warn("Error querying database:", err)
+      return
+    } 
+    else{
+    res.send(results);
+    }
+  });
+});
+
+app.get('/new-post', (req, res) => {
+  conn.query("SELECT * FROM posts;", (err, results, fields) => {
+    if(err) {
+      console.warn("Error querying database:", err)
+      return
+    } 
+    else{
+    res.send(results);
+    }
+  });
+});
 
 app.get('/ping', function (req, res) {
  return res.json('pong');
