@@ -9,12 +9,11 @@ export default class Registration extends React.Component{
     this.state = {
       input: {email: "",username: "",password: ""},
       errors: {email:'',username:'',password:''},
-      isRedirect: false
+      isRedirect: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
   handleChange = (event) => {
     this.setState({
       input: {
@@ -25,15 +24,15 @@ export default class Registration extends React.Component{
   }
   handleSubmit(event) {
     event.preventDefault();
-    if(this.validate()){
+    this.validate().then((isValid)=>{
+      if(isValid){
       fetch('create-user', {
         method: "POST",
         body: JSON.stringify(this.state.input),
         headers: {
           'Content-Type': 'application/json'
         }
-      }).then(response => {console.log(response)})
-
+      })
       this.setState({
         isRedirect: true,
         input: {
@@ -42,15 +41,27 @@ export default class Registration extends React.Component{
           email: "",
           password: "",
         }
-      })
-    }    
+      })}
+    })
   }
   validate(){
     let input = this.state.input;
     let errors = {};
     let isValid = true;
-    console.log(input);
-    if (!input["email"]) {
+
+    return axios.get('/create-user').then(response => {
+      const data = response.data
+      for(let user of data){
+        if (user.username === input["username"]){
+          errors["username"] = "Username is already taken."
+          isValid= false;
+        }
+        if (user.email === input["email"]){
+          errors["email"] = "This email has already been registered with an account."
+          isValid= false;
+        }
+      }
+    }).then(()=>{if (!input["email"]) {
       isValid = false;
       errors["email"] = "Please enter your email address.";
     }
@@ -70,11 +81,14 @@ export default class Registration extends React.Component{
         errors["email"] = "Please enter valid email address.";
       }
     }
+    console.log(errors)
     this.setState({
       errors: errors
     });
-    return isValid;
-  }
+  return isValid
+  })
+}
+    
 
 
   render(){
@@ -109,6 +123,7 @@ export default class Registration extends React.Component{
           name="username"
           autoComplete="off"
           required/>
+           <div className="text-danger">{this.state.errors.username}</div>
         </div>
         <div> 
           <input
@@ -119,7 +134,8 @@ export default class Registration extends React.Component{
           onChange={this.handleChange}
           name="password"
           autoComplete="off"
-          required/></div>
+          required/>
+           <div className="text-danger">{this.state.errors.password}</div></div>
         <div>
         <button type="submit" className="register btn">
           Submit
