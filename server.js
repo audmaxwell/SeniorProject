@@ -1,8 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const path = require('path');
+const multer = require('multer');
 const app = express();
 const router = express.Router();
+const helpers = require('./helpers');
 var mysql = require('mysql');
 const { response } = require('express');
 var conn = mysql.createConnection({
@@ -17,14 +19,52 @@ conn.connect(function(err) {
 });
 
 app.use(express.static(path.join(__dirname, 'build')));
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(express.static(__dirname + '/public'));
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+      cb(null, 'uploads');
+  },
+  filename: function(req, file, cb) {
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
 
+app.post('/uploads', (req, res) => {
+  let upload = multer({ storage: storage, fileFilter: helpers.imageFilter }).single('imageupload');
 
+  upload(req, res, function(err) {
+      if (req.fileValidationError) {
+          return res.send(req.fileValidationError);
+      }
+      else if (!req.file) {
+          return res.send('Please select an image to upload');
+      }
+      else if (err instanceof multer.MulterError) {
+          return res.send(err);
+      }
+      else if (err) {
+          return res.send(err);
+      }
+      const subj = req.file.path
+      console.log(subj)
+      const sql = `INSERT INTO posts (photo) VALUES(?);`
+      conn.query(sql, [subj], (err,results,fields) => {
+        if (err) {
+          console.warn("Error querying database:", err)
+          return
+        } else {
+          console.log('Data inserted successfully!'); 
+        }
+      })
+    
+      res.send(`You have uploaded this image: <hr/><img src="${req.file.path}" width="500"><hr /><a href="./">Upload another image</a>`);
+  });
+});
 app.post('/new-post', (req,res)=> {
   const subj = req.body.subject
   const sql = `INSERT INTO posts (content) VALUES(?);`
-  console.log(subj)
   conn.query(sql, [subj], (err,results,fields) => {
     if (err) {
       console.warn("Error querying database:", err)

@@ -12,6 +12,7 @@ export default class AddPost extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     
   }
+
     handleChange(event){
       this.setState({subject:event.target.value})
       console.log(this.state.subject)}
@@ -19,13 +20,14 @@ export default class AddPost extends React.Component {
       event.preventDefault();
       console.log(this.state.subject)
       axios.post('new-post', {subject: this.state.subject}).then(response => {console.log(response)})
+      document.getElementById("postbox").reset();
     }
     
     render(){
         return(
         <div className="text_post">
           <div className="form-area">  
-              <form onSubmit={this.handleSubmit}>              
+              <form id= "postbox" onSubmit={this.handleSubmit}>              
                 <div className="form-group">
                 <textarea className="form-control"
                   onChange={this.handleChange}

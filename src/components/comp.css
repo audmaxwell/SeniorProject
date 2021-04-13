@@ -1,13 +1,10 @@
-.form-area{
-    border: solid;
-    max-width: 500px;
-    display: block;
-    margin: auto;
+
+.text-post{
+    margin-top: 15px;
+    width: 100%;
 }
-.form-control{
-    margin:auto;
-    margin-top: 5px;
-    width:500px;
+.upload btns{
+    display: inline;
 }
 .allposts{
     font-size: 20px;
