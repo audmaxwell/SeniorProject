@@ -34,7 +34,6 @@ export default class Login extends React.Component{
           password: "",
         }
       })
-      this.props.onLogin()
     }
     })
   }
@@ -50,10 +49,7 @@ export default class Login extends React.Component{
         if (user.username === input["username"]){
                 isMatch = true;
             if(user.password === input["password"]){
-                isValid = true;}   
-            else if (user.password !== input["password"]){
-                errors["password"] = "Incorrect password."
-            }     
+                isValid = true;}     
         }
       }
     }).then(()=>{
@@ -68,10 +64,12 @@ export default class Login extends React.Component{
       isValid = false;
       errors["password"] = "Please enter a password.";
     }
-    console.log(errors)
     this.setState({
       errors: errors
     });
+  if(isValid){
+    this.props.onLogin()
+  }
   return isValid
   })
 }

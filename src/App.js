@@ -57,8 +57,8 @@ function App() {
       <h1>Welcome!</h1>
       <Router>
           <Switch>
-          <Route exact path='/register'><Registration onLogin = {login}/></Route>
-          <PrivateRoute path='/' component = {Homepage} isLogin = {isLogin}></PrivateRoute>
+          <Route exact path='/'><Registration onLogin = {login}/></Route>
+          <PrivateRoute path='/homepage' component = {Homepage} isLogin = {isLogin}></PrivateRoute>
           <Route exact path='/login'><Login onLogin = {login}/></Route>
           </Switch>
       </Router>

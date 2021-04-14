@@ -47,7 +47,7 @@ app.post('/uploads', (req, res) => {
       else if (err) {
           return res.send(err);
       }
-      const subj = req.file.path
+      const subj = req.file
       console.log(subj)
       const sql = `INSERT INTO posts (photo) VALUES(?);`
       conn.query(sql, [subj], (err,results,fields) => {
@@ -59,7 +59,7 @@ app.post('/uploads', (req, res) => {
         }
       })
     
-      res.send(`You have uploaded this image: <hr/><img src="${req.file.path}" width="500"><hr /><a href="./">Upload another image</a>`);
+      res.send("amen");
   });
 });
 app.post('/new-post', (req,res)=> {

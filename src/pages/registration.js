@@ -42,8 +42,7 @@ export default class Registration extends React.Component{
           email: "",
           password: "",
         }
-      })
-    this.props.onLogin()}
+      })}
     })
   }
   validate(){
@@ -87,6 +86,9 @@ export default class Registration extends React.Component{
     this.setState({
       errors: errors
     });
+    if(isValid){
+      this.props.onLogin()
+    }
   return isValid
   })
 }

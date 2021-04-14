@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import './comp.css';
-import test from "../uploads/imageupload-1618174527091.png";
+
 import FileUploader from './fileupload';
  
 export default class Posts extends React.Component {
@@ -10,7 +10,8 @@ export default class Posts extends React.Component {
         this.state={
             posts : [],
             subject:"",
-            file: "" };
+            file: "",
+            imageurl: "" };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.getPosts()
@@ -18,6 +19,13 @@ export default class Posts extends React.Component {
         getPosts(){
             axios.get('/new-post')
             .then(response =>{
+                const data = response.data
+                for (let post of data){
+                  if(post.photo){
+                    console.log(post.photo)
+                  }
+                }
+                console.log(this.state.imageurl)
                 this.setState({posts: response.data})
             })
         }
@@ -26,10 +34,12 @@ export default class Posts extends React.Component {
           handleSubmit(event){
             event.preventDefault();
             if(this.state.file){
+
               axios.post("uploads", this.state.file, { 
              })
            .then(res => {
                console.log(res)
+               console.log(this.state.imageurl)
             })
            }
             
@@ -58,7 +68,7 @@ export default class Posts extends React.Component {
                     rows="7"></textarea>
                   </div>
                 <button type="submit" id="submit" name="submit">Add Post</button>
-                <form className = "upload btns" method="POST" action="/uploads" encType="multipart/form-data">
+                <form className = "upload btns" method="POST" action="/uploads" enctype="multipart/form-data">
                   <div>
                       <label>Upload a photo:</label>
                       <input type="file" name="imageupload" />
@@ -69,7 +79,6 @@ export default class Posts extends React.Component {
               </form>
                 </form>
             </div>
-            <img src={test} width="500"/>
             <div className="allposts">
                 {this.state.posts.map( (post,index) => 
                 <div key = {index} >{post.content}</div>
