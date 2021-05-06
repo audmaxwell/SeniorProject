@@ -4,6 +4,7 @@ import Header from './components/header';
 import Registration from './pages/registration';
 import Homepage from './pages/homepage';
 import Login from './pages/login';
+import MyPosts from './pages/my-posts';
 import {Redirect,Switch,BrowserRouter as Router, Route} from 'react-router-dom';
 
 
@@ -59,6 +60,7 @@ function App() {
       <Router>
           <Switch>
           <Route exact path='/'><Registration onLogin = {login}/></Route>
+          <Route exact path='/my-posts'><MyPosts/></Route>
           <PrivateRoute path='/homepage' component = {Homepage} isLogin = {isLogin}></PrivateRoute>
           <Route exact path='/login'><Login onLogin = {login}/></Route>
           </Switch>

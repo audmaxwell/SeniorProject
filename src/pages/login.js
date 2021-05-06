@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React from 'react'; 
+import React from 'react';
 import {Route,Redirect, useHistory} from "react-router-dom";
 import Homepage from './homepage';
 import UserInfo from '../components/userinfo.js';
@@ -56,7 +56,8 @@ export default class Login extends React.Component{
                 isValid = true;
                 console.log(user.userID)
                 UserInfo.setName(user.username)
-                UserInfo.setUserID(user.userID)}     
+                UserInfo.setUserID(user.userID)}
+                sessionStorage.setItem("userID", user.userID)
         }
       }
     }).then(()=>{
@@ -81,7 +82,7 @@ export default class Login extends React.Component{
   return isValid
   })
 }
-    
+
 
 
   render(){
@@ -107,7 +108,7 @@ export default class Login extends React.Component{
           required/>
            <div className="text-danger">{this.state.errors.username}</div>
         </div>
-        <div> 
+        <div>
           <input
           placeholder="password"
           type="password"
