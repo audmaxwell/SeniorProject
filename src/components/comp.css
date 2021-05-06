@@ -2,14 +2,44 @@
 .text-post{
     margin-top: 15px;
     width: 100%;
+    border: 2px solid;
+    padding: 5px;
 }
 .upload btns{
     display: inline;
 }
 .allposts{
+    margin-top: 50px;
     font-size: 20px;
     border: solid;
     display: block;
     margin: auto;
     width: 500px;
+}
+.form-control{
+    width:500px;
+    height:100px;
+    width:100%;
+}
+.postborder{
+    border:rounded 5px #8CBBF8;
+}
+.each-post{
+    border: 5px;
+    margin:auto;
+}
+
+.pfp{
+    border: 2px dashed black;
+    max-width:100px;
+    height:100px;
+    margin:2px;
+    margin-right: 12px;
+}
+.profilecont{
+    border: 2px solid;
+    height:250px;
+}
+p{
+    font-size: 20px;
 }

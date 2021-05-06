@@ -1,5 +1,5 @@
 const express = require('express');
-const bodyParser = require('body-parser')
+var bodyParser = require('body-parser')
 const path = require('path');
 const multer = require('multer');
 const app = express();
@@ -7,6 +7,7 @@ const router = express.Router();
 const helpers = require('./helpers');
 var mysql = require('mysql');
 const { response } = require('express');
+var uniqid = require('uniqid');
 var conn = mysql.createConnection({
   host: 'localhost', 
   user: 'root',
@@ -24,7 +25,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-      cb(null, 'uploads');
+      cb(null, 'public/uploads');
+      console.log(file)
   },
   filename: function(req, file, cb) {
       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -32,53 +34,51 @@ const storage = multer.diskStorage({
 });
 
 app.post('/uploads', (req, res) => {
+  console.log(req)
   let upload = multer({ storage: storage, fileFilter: helpers.imageFilter }).single('imageupload');
-
   upload(req, res, function(err) {
       if (req.fileValidationError) {
+        console.log("1")
           return res.send(req.fileValidationError);
       }
       else if (!req.file) {
+        console.log("2")
           return res.send('Please select an image to upload');
       }
       else if (err instanceof multer.MulterError) {
+        console.log("3")
           return res.send(err);
       }
       else if (err) {
+        console.log("4")
           return res.send(err);
       }
-      const subj = req.file
+      const subj = "uploads/" + req.file.filename
       console.log(subj)
-      const sql = `INSERT INTO posts (photo) VALUES(?);`
-      conn.query(sql, [subj], (err,results,fields) => {
-        if (err) {
-          console.warn("Error querying database:", err)
-          return
-        } else {
-          console.log('Data inserted successfully!'); 
-        }
-      })
-    
-      res.send("amen");
+      return res.json(subj)
+      
   });
 });
 app.post('/new-post', (req,res)=> {
-  const subj = req.body.subject
-  const sql = `INSERT INTO posts (content) VALUES(?);`
-  conn.query(sql, [subj], (err,results,fields) => {
+  const {subj, photourl, userid} = req.body
+  const sql = `INSERT INTO posts (content, photourl, userid) VALUES(?, ?, ?);`
+  console.log(req.body)
+  conn.query(sql, [req.body[0], req.body[1], req.body[2]], (err,results,fields) => {
     if (err) {
       console.warn("Error querying database:", err)
       return
     } else {
-      console.log('Data inserted successfully!'); 
+      console.log('Data inserted successfully!');
+      res.send()
     }
   })
 });
 app.post('/create-user', (req, res) => {
   const { username, email, password } = req.body
-  const sql = `INSERT INTO users(username, email, password, created)
-  VALUES(?, ?, ?, NOW());`
-  conn.query(sql, [username, email, password], (err, results, fields) => { 
+  const id = uniqid()
+  const sql = `INSERT INTO users(userID, username, email, password, created)
+  VALUES(?, ?, ?, ?, NOW());`
+  conn.query(sql, [id, username, email, password], (err, results, fields) => { 
     if (err) {
       console.warn("Error querying database:", err)
       return
@@ -90,7 +90,20 @@ app.post('/create-user', (req, res) => {
   res.end()
 })
 app.get('/create-user', (req, res) => {
-  conn.query("SELECT username,email FROM users;", (err, results, fields) => {
+  conn.query("SELECT * FROM users;", (err, results, fields) => {
+    if(err) {
+      console.warn("Error querying database:", err)
+      return
+    } 
+    else{
+    res.send(results);
+    }
+  });
+});
+
+app.get('/create-user', (req, res) => {
+  console.log(req.body.USERNAME)
+  conn.query("SELECT * FROM users;", (err, results, fields) => {
     if(err) {
       console.warn("Error querying database:", err)
       return

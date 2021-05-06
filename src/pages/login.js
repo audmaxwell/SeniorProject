@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from 'react'; 
 import {Route,Redirect, useHistory} from "react-router-dom";
 import Homepage from './homepage';
+import UserInfo from '../components/userinfo.js';
 
 export default class Login extends React.Component{
   constructor() {
@@ -26,6 +27,7 @@ export default class Login extends React.Component{
     event.preventDefault();
     this.validate().then((isValid)=>{
       if(isValid){
+        let input = this.state.input
       this.setState({
         isRedirect: true,
         input: {
@@ -40,16 +42,21 @@ export default class Login extends React.Component{
   validate(){
     let input = this.state.input;
     let errors = {};
-    let isValid = true;
+    let isValid = false;
     let isMatch = false;
 
     return axios.get('/create-user').then(response => {
       const data = response.data
+      console.log(data)
       for(let user of data){
         if (user.username === input["username"]){
                 isMatch = true;
             if(user.password === input["password"]){
-                isValid = true;}     
+                console.log("password")
+                isValid = true;
+                console.log(user.userID)
+                UserInfo.setName(user.username)
+                UserInfo.setUserID(user.userID)}     
         }
       }
     }).then(()=>{
@@ -68,6 +75,7 @@ export default class Login extends React.Component{
       errors: errors
     });
   if(isValid){
+    console.log("hi")
     this.props.onLogin()
   }
   return isValid
@@ -83,7 +91,7 @@ export default class Login extends React.Component{
     }
     else{
     return (
-      <form onSubmit={this.handleSubmit} >
+      <form className="formbg" onSubmit={this.handleSubmit} >
         <h2 className="label-wrapper">
           <label>Log in!</label>
         </h2>

@@ -1,5 +1,6 @@
 import React from 'react';
-import logo from '../catsprite.png';
+import logo from '../yes1.png';
+import './comp.css';
 export default class Header extends React.Component {
   render(){
     return (

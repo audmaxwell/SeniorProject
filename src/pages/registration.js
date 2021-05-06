@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import React from 'react'; 
 import {Route,Redirect, useHistory} from "react-router-dom";
 import Homepage from './homepage';
+import UserInfo from '../components/userinfo.js';
 
 export default class Registration extends React.Component{
   constructor() {
@@ -42,7 +43,9 @@ export default class Registration extends React.Component{
           email: "",
           password: "",
         }
-      })}
+      })
+      UserInfo.setName(this.state.username)
+      }
     })
   }
   validate(){
@@ -105,7 +108,7 @@ export default class Registration extends React.Component{
     }
     else{
     return (
-      <form onSubmit={this.handleSubmit} >
+      <form className="formbg" onSubmit={this.handleSubmit} >
         <h2 className="label-wrapper">
           <label>Sign up!</label>
         </h2>

@@ -1,20 +1,24 @@
 import React from 'react';
 import axios from 'axios';
 import './comp.css';
-
-import FileUploader from './fileupload';
+import UserInfo from './userinfo.js';
  
 export default class Posts extends React.Component {
     constructor(props){
         super(props);
+        this.myRef = React.createRef();
         this.state={
             posts : [],
             subject:"",
-            file: "",
+            userID: "",
             imageurl: "" };
+        this.handleFileChange = this.handleFileChange.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.getPosts()
+        if(this.state.imageurl === ""){
+          this.getPosts()
+        }
+       
         }
         getPosts(){
             axios.get('/new-post')
@@ -25,28 +29,42 @@ export default class Posts extends React.Component {
                     console.log(post.photo)
                   }
                 }
-                console.log(this.state.imageurl)
+                
                 this.setState({posts: response.data})
             })
+            console.log(UserInfo.getUserID())             
         }
+        handleFileChange(event){
+          event.preventDefault()
+          const data = new FormData(this.myRef.current)
+          fetch('uploads', {
+            method: "POST",
+            body: data,
+          }).then((res)=> res.json()).then(res => {this.setState({imageurl:res},()=>{console.log(this.state.imageurl)})})}
         handleChange(event){
-            this.setState({subject:event.target.value})}
-          handleSubmit(event){
+            this.setState({subject:event.target.value})
+          console.log(this.state.subject)}
+        handleSubmit(event){
             event.preventDefault();
-            if(this.state.file){
-
-              axios.post("uploads", this.state.file, { 
-             })
-           .then(res => {
-               console.log(res)
-               console.log(this.state.imageurl)
-            })
-           }
+            const uid = UserInfo.getUserID()
+            console.log(uid)
+            this.setState({ userID: uid }, 
+              ()=>{console.log(this.state.userID)});
+            console.log(this.state.userID)
+            const info = [this.state.subject,this.state.imageurl,uid]
+            console.log(info)
+            fetch('new-post', {
+              method: "POST",
+              body: JSON.stringify(info),
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }).then(() => {console.log("why")
+              document.getElementById("postbox").reset()
+              this.setState({subject: ""})
+              this.setState({imageurl: ""})
+            this.getPosts()})
             
-            axios.post('new-post', {subject: this.state.subject}
-            ).then(response => {console.log(response)})
-            document.getElementById("postbox").reset();
-            this.getPosts()
           }
           
     render(){
@@ -68,20 +86,21 @@ export default class Posts extends React.Component {
                     rows="7"></textarea>
                   </div>
                 <button type="submit" id="submit" name="submit">Add Post</button>
-                <form className = "upload btns" method="POST" action="/uploads" enctype="multipart/form-data">
+                </form>
+                <form ref={this.myRef} className = "upload btns" onChange = {this.handleFileChange} onSubmit={this.onFileSubmit} encType="multipart/form-data">
                   <div>
                       <label>Upload a photo:</label>
                       <input type="file" name="imageupload" />
                   </div>
-                  <div>
-                      <input type="submit" name="btn_upload_profile_pic" value="Upload" />
-                  </div>
               </form>
-                </form>
             </div>
             <div className="allposts">
-                {this.state.posts.map( (post,index) => 
-                <div key = {index} >{post.content}</div>
+                {this.state.posts.slice(0).reverse().map( (post,index) => 
+                <div className="each-post" key = {index} >
+                {post.content} 
+                <img src={post.photourl} width="500"/>
+                <hr className="postborder"/></div>
+
                 )}
         </div>
         </div>

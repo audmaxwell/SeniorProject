@@ -10,37 +10,43 @@
 
 
 .App-link {
-  color: #61dafb;
+  color: #5c98a9;
 }
 
+.formbg{
+  background-color:rgb(243, 218, 225);
+  box-shadow: 10px 5px 5px rgb(196, 196, 196);
+}
 
 .Wrapper {
-  max-width: 900px;
+  max-width: 100%;
   margin: auto;
   border-left: 1px solid rgba(0,0,0,0.1);
   border-right: 1px solid rgba(0,0,0,0.1);
 }
  
-.Header {
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-  display: flex;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  background: #fff;
-  z-index: 999;
+.Header {  
+  background-color: #ffffff;
+  opacity: 0.6;
+  background-image:  linear-gradient(135deg, rgba(255, 156, 184, 1) 25%, transparent 25%), linear-gradient(225deg, rgba(255, 156, 184, 1) 25%, transparent 25%), linear-gradient(45deg, rgba(255, 156, 184, 1) 25%, transparent 25%), linear-gradient(315deg, rgba(255, 156, 184, 1) 25%, #ffffff 25%);
+  background-position:  10px 0, 10px 0, 0 0, 0 0;
+  background-size: auto;
+  background-repeat: repeat;
+  box-shadow: 10px 5px 5px rgb(196, 196, 196);
 }
  
 .Header .Branding {
-  margin: 0;
+  margin: auto;
+  position: absolute;
 }
  
-.Header .Branding .Logo {
-  height: 40px;
-  margin: 10px;
-  vertical-align: middle;
+.Logo {
+  align-self: center;
+  max-height: 150px;
+  vertical-align: bottom;
+  right: 100000px;
 }
- 
+
 a {
   text-decoration: none;
   color: #000;
