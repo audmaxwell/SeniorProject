@@ -87,8 +87,7 @@ export default class Login extends React.Component{
 
   render(){
     if(this.state.isRedirect){
-      return(
-        <Redirect to="/homepage" exact component = {Homepage}/>)
+      return <Redirect to="/" />
     }
     else{
     return (

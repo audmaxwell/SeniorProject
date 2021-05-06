@@ -7,48 +7,23 @@ import Login from './pages/login';
 import MyPosts from './pages/my-posts';
 import {Redirect,Switch,BrowserRouter as Router, Route} from 'react-router-dom';
 
-
-function PrivateRoute({ component: Component, isLogin, ...rest }) {
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        JSON.parse(sessionStorage.getItem('thisCheck')) ? (
-          <Component {...props} />
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: props.location }
-            }}
-          />
-        )
-      }
-    />
-  );
-}
-const useSessionStorage = sessionStorageKey => {
-  const [isLogin, setIsLogin] = useState(
-    sessionStorage.getItem(sessionStorageKey) || false
-  );
- 
-  useEffect(() => {
-    sessionStorage.setItem(sessionStorageKey, isLogin);
-    JSON.parse(sessionStorage.getItem('thisCheck'))  }, [isLogin]);
- 
-  return [isLogin, setIsLogin];
-};
 function App() {
- 
   useEffect(function(){
     fetch("/ping").then((res)=> res.json()).then(console.log)
   });
-  const [isLogin, setIsLogin] = useSessionStorage(
-    'thisCheck'
-  );
-  console.log(sessionStorage.getItem('thisCheck'))
-  const login = () =>{
-    setIsLogin(true);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("userID"))
+
+  const logout = () => {
+    sessionStorage.clear("userID")
+    setIsLoggedIn(false)
+  }
+
+  let homepage
+  if (isLoggedIn) {
+    homepage = <Homepage />
+  } else {
+    homepage = <Registration onLogin={() => setIsLoggedIn(true) } />
   }
 
   return (
@@ -56,13 +31,16 @@ function App() {
       <div className="Wrapper">
         <Header/>
       </div>
+
       <h1>Welcome!</h1>
+
+      <button onClick={logout}>Logout</button>
+
       <Router>
           <Switch>
-          <Route exact path='/'><Registration onLogin = {login}/></Route>
-          <Route exact path='/my-posts'><MyPosts/></Route>
-          <PrivateRoute path='/homepage' component = {Homepage} isLogin = {isLogin}></PrivateRoute>
-          <Route exact path='/login'><Login onLogin = {login}/></Route>
+            {isLoggedIn && <Route path='/my-posts'><MyPosts/></Route>}
+            <Route path='/login'><Login onLogin = {() => setIsLoggedIn(true) }/></Route>
+            <Route path='/'>{homepage}</Route>
           </Switch>
       </Router>
     </div>
