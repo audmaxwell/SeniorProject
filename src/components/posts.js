@@ -59,7 +59,7 @@ export default class Posts extends React.Component {
               headers: {
                 'Content-Type': 'application/json'
               }
-            }).then(() => {console.log("why")
+            }).then(() => {
               document.getElementById("postbox").reset()
               this.setState({subject: ""})
               this.setState({imageurl: ""})

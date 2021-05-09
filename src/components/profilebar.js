@@ -1,9 +1,11 @@
 import React from 'react';
 import './comp.css';
+import {Link} from "react-router-dom";
 
 export default function ProfileBar() {
  const uploadedImage = React.useRef(null);
   const imageUploader = React.useRef(null);
+  
 
   const handleImageUpload = e => {
     const [file] = e.target.files;
@@ -19,6 +21,7 @@ export default function ProfileBar() {
   };
 
   return (
+    <div className="profilecont">
     <div
       style={{
         display: "flex",
@@ -46,7 +49,11 @@ export default function ProfileBar() {
         />
       </div>
       <p>Click to upload Image</p>
+    <Link to="/profile" >My Profile</Link>
     </div>
+    </div>
+    
+
 
   );
   }

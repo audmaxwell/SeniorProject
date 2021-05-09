@@ -4,7 +4,7 @@ import Header from './components/header';
 import Registration from './pages/registration';
 import Homepage from './pages/homepage';
 import Login from './pages/login';
-import MyPosts from './pages/my-posts';
+import Profile from './pages/profile';
 import {Redirect,Switch,BrowserRouter as Router, Route} from 'react-router-dom';
 
 function App() {
@@ -38,7 +38,7 @@ function App() {
 
       <Router>
           <Switch>
-            {isLoggedIn && <Route path='/my-posts'><MyPosts/></Route>}
+            {isLoggedIn && <Route path='/profile'><Profile/></Route>}
             <Route path='/login'><Login onLogin = {() => setIsLoggedIn(true) }/></Route>
             <Route path='/'>{homepage}</Route>
           </Switch>
