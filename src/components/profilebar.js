@@ -1,23 +1,36 @@
 import React from 'react';
 import './comp.css';
 import {Link} from "react-router-dom";
+import axios from 'axios';
 
 export default function ProfileBar() {
- const uploadedImage = React.useRef(null);
+  const [profileImage, setProfileImage] = React.useState()
   const imageUploader = React.useRef(null);
-  
+  const formRef = React.useRef();
+
+  React.useEffect(() => {
+    const userID = sessionStorage.getItem('userID')
+
+    axios.get(`/users/${userID}`)
+      .then(res => setProfileImage(res.data.profileImage))
+  }, [])
 
   const handleImageUpload = e => {
-    const [file] = e.target.files;
-    if (file) {
-      const reader = new FileReader();
-      const { current } = uploadedImage;
-      current.file = file;
-      reader.onload = e => {
-        current.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+    const formData = new FormData(formRef.current)
+
+    axios.post('/uploads', formData)
+      .then((res) => {
+        const url = res.data;
+
+        console.log(url)
+        
+        setProfileImage(url)
+        
+        axios.post('/users/update-profile-image', { 
+          userID: sessionStorage.getItem('userID'),
+          profileImage: res.data
+        })
+      })
   };
 
   return (
@@ -30,21 +43,24 @@ export default function ProfileBar() {
         justifyContent: "center"
       }}
     >
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        ref={imageUploader}
-        style={{
-          display: "none"
-        }}
-      />
+      <form ref={formRef} onChange={handleImageUpload}>
+        <input
+          type="file"
+          name="imageupload"
+          accept="image/*"
+          ref={imageUploader}
+          style={{
+            display: "none"
+          }}
+        />
+      </form>
+
       <div
         className="pfpcont"
         onClick={() => imageUploader.current.click()}
       >
         <img
-          ref={uploadedImage}
+          src={profileImage}
           className="pfp"
         />
       </div>

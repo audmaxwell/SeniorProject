@@ -1,20 +1,36 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import '../components/comp.css';
 
 export default function Profile({ isClient }) {
+    const [user, setUser] = useState([]);
     const [posts, setPosts] = useState([]);
     const { username } = useParams();
 
     useEffect(() => {
         if (isClient) {
+            const userID = sessionStorage.getItem('userID')
+            console.log(userID)
+
             axios.post('/users/all-posts', { userID: sessionStorage.getItem('userID') })
                 .then(res => setPosts(res.data))
+
+            axios.get(`/users/${userID}`)
+                .then(res => setUser(res.data))
         } else {
             axios.post('/users/get-user', { username: username })
-                .then(res => axios.post('/users/all-posts', { userID: res.data.userID }))
-                .then(res => setPosts(res.data))
+                .then(res => {
+                    const { userID } = res.data;
+
+                    console.log(userID)
+
+                    axios.get(`/users/${userID}`)
+                        .then(res => setUser(res.data))
+                
+                    axios.post('/users/all-posts', { userID: userID })
+                        .then(res => setPosts(res.data))
+                })
         }
     }, [])
 
@@ -26,6 +42,10 @@ export default function Profile({ isClient }) {
 
     if (posts.length > 0) {
         return <div>
+            <div>
+                <img src={user.profileImage} />
+            </div>
+
             <div className="allposts">
                 {posts.map((post, index) => {
                     return <div className="each-post" key={index}>

@@ -90,6 +90,15 @@ app.post('/create-user', (req, res) => {
   res.end()
 })
 
+app.get('/users/:id', (req, res) => {
+  console.log('params', req.params)
+
+  conn.query('SELECT * FROM users WHERE userID=?', [ req.params.id ], (err, results) => {
+    if (err) res.end(err);
+    res.send(results[0])
+  })
+})
+
 app.post('/users/get-user', (req, res) => {
   const { username } = req.body;
 
@@ -114,6 +123,16 @@ app.post('/users/all-posts', (req, res) => {
       console.log('results', results)
       res.send(results)
     }
+  })
+})
+
+app.post('/users/update-profile-image', (req, res) => {
+  const { userID, profileImage } = req.body;
+
+  console.log('update image for', userID, 'to', profileImage)
+
+  conn.query('UPDATE users SET profileImage=? WHERE userID=?;', [profileImage, userID ], () => {
+    res.end() 
   })
 })
 
