@@ -15,6 +15,10 @@ export default function ProfileBar() {
       .then(res => setProfileImage(res.data.profileImage))
   }, [])
 
+  const onClick = () => {
+    imageUploader.current.click()
+  }
+
   const handleImageUpload = e => {
     const formData = new FormData(formRef.current)
 
@@ -35,38 +39,38 @@ export default function ProfileBar() {
 
   return (
     <div className="profilecont">
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
-      <form ref={formRef} onChange={handleImageUpload}>
-        <input
-          type="file"
-          name="imageupload"
-          accept="image/*"
-          ref={imageUploader}
-          style={{
-            display: "none"
-          }}
-        />
-      </form>
-
       <div
-        className="pfpcont"
-        onClick={() => imageUploader.current.click()}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
       >
-        <img
-          src={profileImage}
-          className="pfp"
-        />
+        <form ref={formRef} onChange={handleImageUpload}>
+          <input
+            type="file"
+            name="imageupload"
+            accept="image/*"
+            ref={imageUploader}
+            style={{
+              display: "none"
+            }}
+          />
+        </form>
+
+        <div className="pfpcont">
+          <a href="#" onClick={onClick}>
+            <img
+              src={profileImage}
+              className="pfp"
+            />
+          </a>
+        </div>
+        <p><a href="#" onClick={onClick}>Click to upload Image</a></p>
+
+        <Link to="/profile" >My Profile</Link>
       </div>
-      <p>Click to upload Image</p>
-    <Link to="/profile" >My Profile</Link>
-    </div>
     </div>
     
 
