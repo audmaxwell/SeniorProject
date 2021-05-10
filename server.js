@@ -60,10 +60,10 @@ app.post('/uploads', (req, res) => {
   });
 });
 app.post('/new-post', (req,res)=> {
-  const {subj, photourl, userid} = req.body
-  const sql = `INSERT INTO posts (content, photourl, userid) VALUES(?, ?, ?);`
-  console.log(req.body)
-  conn.query(sql, [req.body[0], req.body[1], req.body[2]], (err,results,fields) => {
+  const sql = `INSERT INTO posts (postID, content, photourl, userID, published) VALUES(?, ?, ?, ?, NOW());`
+  const postID = uniqid();
+
+  conn.query(sql, [postID, req.body[0], req.body[1], req.body[2]], (err,results,fields) => {
     if (err) {
       console.warn("Error querying database:", err)
       return
