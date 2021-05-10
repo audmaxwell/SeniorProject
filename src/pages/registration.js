@@ -114,6 +114,7 @@ export default class Registration extends React.Component{
         </h2>
         <div>
           <input
+          autoFocus
           placeholder="email"
           type="email"
           id="email"
