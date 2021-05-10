@@ -29,7 +29,7 @@ export default class Posts extends React.Component {
                     console.log(post.photo)
                   }
                 }
-                
+
                 this.setState({posts: response.data})
             })
             console.log(UserInfo.getUserID())             
@@ -95,7 +95,7 @@ export default class Posts extends React.Component {
               </form>
             </div>
             <div className="allposts">
-                {this.state.posts.slice(0).reverse().map( (post,index) => 
+                {this.state.posts.slice(0).map( (post,index) => 
                 <div className="each-post" key = {index} >
                 {post.content} 
                 <p>{post.userID}</p>

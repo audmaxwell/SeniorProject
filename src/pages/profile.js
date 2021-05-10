@@ -9,11 +9,11 @@ export default function Profile({ isClient }) {
 
     useEffect(() => {
         if (isClient) {
-            axios.post('/user/all-posts', { userID: sessionStorage.getItem('userID') })
+            axios.post('/users/all-posts', { userID: sessionStorage.getItem('userID') })
                 .then(res => setPosts(res.data))
         } else {
-            axios.post('/user/get-user', { username: username })
-                .then(res => axios.post('/user/all-posts', { userID: res.data.userID }))
+            axios.post('/users/get-user', { username: username })
+                .then(res => axios.post('/users/all-posts', { userID: res.data.userID }))
                 .then(res => setPosts(res.data))
         }
     }, [])
@@ -27,7 +27,7 @@ export default function Profile({ isClient }) {
     if (posts.length > 0) {
         return <div>
             <div className="allposts">
-                {posts.reverse().map((post, index) => {
+                {posts.map((post, index) => {
                     return <div className="each-post" key={index}>
                         <p>{post.content}</p>
                         {post.photourl && <img src={post.photourl} />}

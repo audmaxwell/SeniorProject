@@ -107,7 +107,7 @@ app.post('/users/all-posts', (req, res) => {
 
   console.log('userID', userID)
 
-  conn.query("SELECT * FROM posts WHERE userID=?;", [ userID ], (err, results) => {
+  conn.query("SELECT * FROM posts WHERE userID=? ORDER BY published DESC;", [ userID ], (err, results) => {
     if (err) {
       res.end()
     } else {
@@ -143,7 +143,7 @@ app.get('/create-user', (req, res) => {
 });
 
 app.get('/new-post', (req, res) => {
-  conn.query("SELECT * FROM posts;", (err, results, fields) => {
+  conn.query("SELECT * FROM posts ORDER BY published DESC;", (err, results, fields) => {
     if(err) {
       console.warn("Error querying database:", err)
       return
