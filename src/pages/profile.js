@@ -47,13 +47,12 @@ export default function Profile({ isClient }) {
             </div>
 
             <div className="allposts">
-                {posts.map((post, index) => {
-                    return <div className="each-post" key={index}>
-                        <p>{post.content}</p>
-                        {post.photourl && <img src={post.photourl} />}
-                        <hr className="postborder"/>
-                    </div>
-                })}
+                {posts.map((post, index) => <div key={index} className="each-post">
+                    {post.content}
+                    <p>{post.userID}</p>
+                    {post.photourl && <img src={post.photourl} width={500} />}
+                    <hr className="postborder" />
+                </div>)}
             </div>
         </div>
     } else {
