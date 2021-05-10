@@ -53,7 +53,7 @@ app.post('/uploads', (req, res) => {
         console.log("4")
           return res.send(err);
       }
-      const subj = "uploads/" + req.file.filename
+      const subj = "/uploads/" + req.file.filename
       console.log(subj)
       return res.json(subj)
       
