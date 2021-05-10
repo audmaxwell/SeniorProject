@@ -89,6 +89,34 @@ app.post('/create-user', (req, res) => {
 
   res.end()
 })
+
+app.post('/users/get-user', (req, res) => {
+  const { username } = req.body;
+
+  conn.query("SELECT * FROM users WHERE username=?;", [ username ], (err, results) => {
+    if (err) {
+      res.end()
+    } else {
+      res.send(results[0])
+    }
+  })
+})
+
+app.post('/users/all-posts', (req, res) => {
+  const { userID } = req.body;
+
+  console.log('userID', userID)
+
+  conn.query("SELECT * FROM posts WHERE userID=?;", [ userID ], (err, results) => {
+    if (err) {
+      res.end()
+    } else {
+      console.log('results', results)
+      res.send(results)
+    }
+  })
+})
+
 app.get('/create-user', (req, res) => {
   conn.query("SELECT * FROM users;", (err, results, fields) => {
     if(err) {
