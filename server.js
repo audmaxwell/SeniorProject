@@ -136,6 +136,14 @@ app.post('/users/update-profile-image', (req, res) => {
   })
 })
 
+app.post('/users/update-profile-description', (req, res) => {
+  const { userID, profileDescription } = req.body;
+
+  conn.query('UPDATE users SET profileDescription=? WHERE userID=?', [profileDescription, userID], () => {
+    res.end()
+  })
+})
+
 app.get('/create-user', (req, res) => {
   conn.query("SELECT * FROM users;", (err, results, fields) => {
     if(err) {

@@ -38,8 +38,8 @@ function App() {
 
       <Router>
           <Switch>
-            {isLoggedIn && <Route path='/profile'><Profile isClient /></Route>}
-            <Route path='/user/:username'><Profile /></Route>
+            {isLoggedIn && <Route exact path='/profile'><Profile isClient /></Route>}
+            <Route path='/profile/:username'><Profile /></Route>
             <Route path='/login'><Login onLogin = {() => setIsLoggedIn(true) }/></Route>
             <Route path='/'>{homepage}</Route>
           </Switch>

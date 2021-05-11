@@ -11,7 +11,6 @@ export default function Profile({ isClient }) {
     useEffect(() => {
         if (isClient) {
             const userID = sessionStorage.getItem('userID')
-            console.log(userID)
 
             axios.post('/users/all-posts', { userID: sessionStorage.getItem('userID') })
                 .then(res => setPosts(res.data))
@@ -34,16 +33,12 @@ export default function Profile({ isClient }) {
         }
     }, [])
 
-    if (isClient) {
-        // TODO: Allow users to upload a header for their profile
-        // TODO: Allow users to set a description for their profile
-        // Update 'users' table for both of these
-    }
-
     if (posts.length > 0) {
         return <div>
             <div>
-                <img src={user.profileImage} />
+                <img src={user.profileImage} width={300} />
+                
+                <p>{user.profileDescription}</p>
             </div>
 
             <div className="allposts">
