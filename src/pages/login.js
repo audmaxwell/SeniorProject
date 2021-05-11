@@ -97,6 +97,7 @@ export default class Login extends React.Component{
         </h2>
         <div>
         <input
+          autoFocus
           placeholder="username"
           type="text"
           id="usernameReg"

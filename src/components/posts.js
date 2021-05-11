@@ -29,7 +29,7 @@ export default class Posts extends React.Component {
                     console.log(post.photo)
                   }
                 }
-                
+
                 this.setState({posts: response.data})
             })
             console.log(UserInfo.getUserID())             
@@ -51,7 +51,7 @@ export default class Posts extends React.Component {
             this.setState({ userID: uid }, 
               ()=>{console.log(this.state.userID)});
             console.log(this.state.userID)
-            const info = [this.state.subject,this.state.imageurl,uid]
+            const info = [this.state.subject,this.state.imageurl,sessionStorage.getItem('userID')]
             console.log(info)
             fetch('new-post', {
               method: "POST",
@@ -95,9 +95,10 @@ export default class Posts extends React.Component {
               </form>
             </div>
             <div className="allposts">
-                {this.state.posts.slice(0).reverse().map( (post,index) => 
+                {this.state.posts.slice(0).map( (post,index) => 
                 <div className="each-post" key = {index} >
                 {post.content} 
+                <p>{post.userID}</p>
                 <img src={post.photourl} width="500"/>
                 <hr className="postborder"/></div>
 

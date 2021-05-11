@@ -1,60 +1,113 @@
 import React from 'react';
 import './comp.css';
 import {Link} from "react-router-dom";
+import axios from 'axios';
 
 export default function ProfileBar() {
- const uploadedImage = React.useRef(null);
-  const imageUploader = React.useRef(null);
-  
+  const [profileImage, setProfileImage] = React.useState()
+  const [profileDescription, setProfileDescription] = React.useState("")
+  const [wereChangesSaved, setWereChangesSaved] = React.useState(false)
+  const imageUploader = React.useRef();
+  const formRef = React.useRef();
 
-  const handleImageUpload = e => {
-    const [file] = e.target.files;
-    if (file) {
-      const reader = new FileReader();
-      const { current } = uploadedImage;
-      current.file = file;
-      reader.onload = e => {
-        current.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+  React.useEffect(() => {
+    const userID = sessionStorage.getItem('userID')
+
+    axios.get(`/users/${userID}`)
+      .then(res => {
+        const { profileImage, profileDescription } = res.data;
+
+        setProfileImage(profileImage)
+        setProfileDescription(profileDescription)
+      })
+  }, [])
+
+  const onClick = () => {
+    imageUploader.current.click()
+  }
+
+  const onSubmit = e => {
+    e.preventDefault();
+
+    const userID = sessionStorage.getItem('userID');
+    const formData = new FormData(formRef.current);
+
+    const imageupload = formData.get('imageupload')
+    if (imageupload !== "") {
+      console.log('updating pfp...')
+      
+      axios.post('/uploads', formData)
+        .then((res) => {
+          const url = res.data;
+
+          console.log(url)
+
+          setProfileImage(url)
+
+          axios.post('/users/update-profile-image', { 
+            userID: userID,
+            profileImage: res.data
+          })
+        })
+
+      setWereChangesSaved(true)
     }
-  };
+    
+    const description = formData.get('description')
+    if (description !== profileDescription) {
+      console.log('updating description...')
+      
+      axios.post('/users/update-profile-description', {
+        userID: userID,
+        profileDescription: description
+      })
+      
+      setWereChangesSaved(true)
+    }
+  }
 
   return (
     <div className="profilecont">
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        ref={imageUploader}
-        style={{
-          display: "none"
-        }}
-      />
       <div
-        className="pfpcont"
-        onClick={() => imageUploader.current.click()}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
       >
-        <img
-          ref={uploadedImage}
-          className="pfp"
-        />
+        <div className="pfpcont">
+          <a href="#" onClick={onClick}>
+            <img
+              src={profileImage}
+              className="pfp"
+            />
+          </a>
+        </div>
+
+        <form ref={formRef} onSubmit={onSubmit}>
+          <input
+            type="file"
+            name="imageupload"
+            accept="image/*"
+            ref={imageUploader}
+          />
+
+          <input
+            type="text"
+            name="description"
+            placeholder="Profile description"
+            defaultValue={profileDescription}
+          />
+
+          <input type="submit" value="Update" />
+          
+          {wereChangesSaved && <p>Changes save!</p>}
+        </form>
+
+        <Link to="/profile" >My Profile</Link>
       </div>
-      <p>Click to upload Image</p>
-    <Link to="/profile" >My Profile</Link>
     </div>
-    </div>
-    
-
-
   );
   }
  
